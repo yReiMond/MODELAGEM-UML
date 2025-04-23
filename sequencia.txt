@@ -1,0 +1,40 @@
+@startuml
+skinparam backgroundColor #FFF
+skinparam sequenceArrowThickness 2
+
+actor "Aluno" as Aluno
+participant "Sistema" as Sistema
+actor "Bibliotecário" as Bibliotecario
+
+Aluno -> Sistema: Solicita empréstimo de livro
+activate Sistema
+
+Sistema -> Sistema: Verifica limite de empréstimos (<=5?)
+alt Limite NÃO atingido
+    Sistema -> Bibliotecario: Solicita aprovação
+    activate Bibliotecario
+    Bibliotecario -> Sistema: Confirma empréstimo
+    deactivate Bibliotecario
+    
+    Sistema -> Sistema: Registra empréstimo
+    Sistema --> Aluno: Empréstimo confirmado\n(Livro X até DD/MM)
+else Limite ATINGIDO
+    Sistema --> Aluno: Empréstimo negado\n(limite de 5 livros)
+end
+
+deactivate Sistema
+
+' Notas de regras
+note over Sistema
+  **Validações durante o empréstimo:**
+  1. Usuário não bloqueado
+  2. Livro disponível/não reservado
+  3. Limite de 5 livros
+end note
+
+note right of Bibliotecario
+  **Papel do Bibliotecário:**
+  - Verificar documentação
+  - Confirmar disponibilidade física
+end note
+@enduml

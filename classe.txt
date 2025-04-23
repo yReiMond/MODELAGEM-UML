@@ -1,0 +1,87 @@
+@startuml
+skinparam classFontSize 14
+
+' --- Definição de Classes ---
+class Usuário {
+  # nome: String
+  # id: Integer
+  + buscarLivros()
+  + reservar()
+  + renovarEmprestimo()
+}
+
+class Aluno {
+  + curso: String
+}
+
+class Bibliotecário {
+  + aprovarEmprestimo()
+  + registrarDevolucao()
+}
+
+class Administrador {
+  + gerenciarCadastros()
+  + excluirRegistros()
+  + gerarRelatorios()
+  + bloquearUsuario()
+}
+
+class Livro {
+  - titulo: String
+  - autor: String
+  - categoria: String
+  - disponivel: Boolean
+}
+
+class Empréstimo {
+  - dataEmprestimo: Date
+  - dataDevolucaoPrevista: Date
+  - status: String
+  + calcularMulta()
+}
+
+class Reserva {
+  - dataReserva: Date
+  - status: String
+  + notificarDisponibilidade()
+}
+
+class Multa {
+  - diasAtraso: Integer
+  - valorTotal: Double
+  + calcularTotal()
+}
+
+' --- Relacionamentos ---
+Usuário <|-- Aluno
+Usuário <|-- Bibliotecário
+Usuário <|-- Administrador
+
+Empréstimo "1" *-- "1..5" Usuário
+Empréstimo "1" o-- "1" Livro
+
+Reserva "0..*" -- "1" Usuário
+Reserva "1" -- "1" Livro
+
+Multa "0..1" -- "1" Empréstimo
+Multa "1" -- "1" Usuário
+
+Administrador --> Usuário : bloqueia
+
+' --- Notas de Regras ---
+note top of Empréstimo
+  **Regras:**
+  - Máximo 5 livros por usuário
+  - Renovável 1x se sem reservas
+end note
+
+note right of Multa
+  **Cálculo:**
+  R$ 2,00 por dia
+end note
+
+note bottom of Reserva
+  Bloqueia renovação
+  do livro associado
+end note
+@enduml

@@ -1,0 +1,32 @@
+@startuml
+skinparam backgroundColor #FFF
+skinparam stateFontSize 14
+
+state "Disponível" as Disponivel
+state "Emprestado" as Emprestado
+state "Reservado" as Reservado
+
+[*] --> Disponivel
+
+Disponivel --> Emprestado : Empréstimo aprovado\npelo bibliotecário
+Disponivel --> Reservado : Reserva registrada\npelo usuário
+
+Emprestado --> Disponivel : Devolução finalizada\n[ sem reservas pendentes ]
+Emprestado --> Reservado : Devolução finalizada\n[ com reserva ativa ]
+
+Reservado --> Emprestado : Retirada do livro\n(pelo reservista)
+Reservado --> Disponivel : Reserva cancelada/expirou
+
+' Notas de regras
+note right of Emprestado
+  **Restrição:**
+  Renovação permitida apenas
+  1x se livro NÃO reservado
+end note
+
+note left of Reservado
+  **Bloqueio:**
+  Impede renovação
+  do empréstimo atual
+end note
+@enduml

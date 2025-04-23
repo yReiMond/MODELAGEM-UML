@@ -1,0 +1,61 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Aluno/Professor" as Usuario
+actor "Bibliotecário" as Bibliotecario
+actor "Administrador" as Admin
+
+rectangle "Sistema de Biblioteca" {
+  usecase "Buscar Livros\n(título/autor/categoria)" as UC1
+  usecase "Reservar Livro" as UC2
+  usecase "Renovar Empréstimo\n(1 vez sem reservas)" as UC3
+  usecase "Solicitar Empréstimo\n(máx. 5 livros)" as UC4
+  
+  usecase "Registrar Devolução\n(com multa R$2/dia)" as UC5
+  usecase "Aprovar Empréstimo" as UC6
+  
+  usecase "Gerar Relatórios" as UC7
+  usecase "Gerenciar Cadastros" as UC8
+  usecase "Excluir Registros" as UC9
+  usecase "Bloquear Usuários\n(com multas)" as UC10
+  
+  usecase "Notificar Disponibilidade" as UC11
+}
+
+' Conexões principais
+Usuario --> UC1
+Usuario --> UC2
+Usuario --> UC3
+Usuario --> UC4
+
+Bibliotecario --> UC5
+Bibliotecario --> UC6
+
+Admin --> UC7
+Admin --> UC8
+Admin --> UC9
+Admin --> UC10
+
+' Relacionamentos especiais
+UC2 .> UC11 : <<extends>>
+UC5 .> UC10 : <<trigger>>
+UC3 .> UC6 : <<depends>>
+UC4 .> UC6 : <<depends>>
+
+' Notas de regras de negócio
+note top of UC3
+  **Não renovável se:**
+  Livro reservado
+end note
+
+note right of UC5
+  **Cálculo de multa:**
+  R$ 2,00 por dia
+end note
+
+note bottom of UC4
+  **Limite:**
+  5 livros por usuário
+end note
+@enduml

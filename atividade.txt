@@ -1,0 +1,40 @@
+@startuml
+skinparam backgroundColor #FFF
+skinparam activityFontSize 14
+
+start
+:Aluno solicita renovação;
+partition Sistema {
+    :Verificar reservas do livro;
+    if (Livro reservado?) then (Sim)
+        :Notificar aluno: "Renovação bloqueada\n(livro reservado)";
+        stop
+    else (Não)
+        :Verificar número de renovações;
+        if (Já renovado?) then (Sim)
+            :Notificar aluno: "Limite de 1 renovação atingido";
+            stop
+        else (Não)
+            :Verificar se usuário está bloqueado;
+            if (Usuário bloqueado?) then (Sim)
+                :Notificar aluno: "Renovação negada\n(multas pendentes)";
+                stop
+            else (Não)
+                :Atualizar data de devolução;
+                :Registrar renovação;
+                :Notificar aluno: "Renovação aprovada\n(nova data: DD/MM)";
+            endif
+        endif
+    endif
+}
+stop
+
+' Notas de regras de negócio
+note right
+  **Regras Envolvidas:**
+  1. Renovação permitida apenas 1 vez
+  2. Bloqueada se livro reservado
+  3. Bloqueada para usuários com multas
+end note
+
+@enduml
