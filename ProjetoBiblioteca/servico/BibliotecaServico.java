@@ -84,7 +84,7 @@ public class BibliotecaServico {
         long totalRes = reservas.stream()
             .filter(r -> !r.getDataReserva().isBefore(inicio))
             .count();
-        double totalMulta = 0; // poderia acumular em lista de devoluções
+        double totalMulta = 0;
         System.out.printf("Relatório %s - Empréstimos: %d, Reservas: %d, Multas: R$ %.2f%n",
             inicio.getMonth(), totalEmp, totalRes, totalMulta);
     }
